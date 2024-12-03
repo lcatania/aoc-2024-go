@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"lcatania/aoc-2024-go/day1"
 	"lcatania/aoc-2024-go/day2"
+	"lcatania/aoc-2024-go/day3"
 )
 
 func main() {
@@ -12,4 +13,7 @@ func main() {
 	fmt.Println("-----------------------------")
 	fmt.Println("Day2 Result -", day2.Day2())
 	fmt.Println("Day2 Part2 Result -", day2.Day2Part2())
+	fmt.Println("-----------------------------")
+	fmt.Println("Day3 Result -", day3.Day3())
+	fmt.Println("Day3 Part2 Result -", day3.Day3Part2())
 }

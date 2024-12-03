@@ -42,3 +42,11 @@ func Count[T any](slice []T, f func(T) bool) int {
 	}
 	return count
 }
+
+func Reduce[T, M any](s []T, f func(M, T) M, initValue M) M {
+	acc := initValue
+	for _, val := range s {
+		acc = f(acc, val)
+	}
+	return acc
+}
