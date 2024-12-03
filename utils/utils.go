@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 )
 
 func ReadFile(path string) string {
@@ -18,6 +19,18 @@ func ReadFile(path string) string {
 	}()
 	buffer, err := io.ReadAll(file)
 	return string(buffer)
+}
+
+func ConvertStringArrayToInt(values []string) []int {
+	var result = []int{}
+	for _, val := range values {
+		newVal, err := strconv.Atoi(val)
+		if err != nil {
+			log.Fatal(err)
+		}
+		result = append(result, newVal)
+	}
+	return result
 }
 
 func Count[T any](slice []T, f func(T) bool) int {
