@@ -50,3 +50,21 @@ func Reduce[T, M any](s []T, f func(M, T) M, initValue M) M {
 	}
 	return acc
 }
+
+func Where[T any](slice []T, f func(T) bool) []T {
+	result := []T{}
+	for _, s := range slice {
+		if f(s) {
+			result = append(result, s)
+		}
+	}
+	return result
+}
+
+func Map[T, V any](ts []T, fn func(T) V) []V {
+	result := make([]V, len(ts))
+	for i, t := range ts {
+		result[i] = fn(t)
+	}
+	return result
+}
