@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"lcatania/aoc-2024-go/day1"
+	"lcatania/aoc-2024-go/day11"
 	"lcatania/aoc-2024-go/day2"
 	"lcatania/aoc-2024-go/day3"
 	"lcatania/aoc-2024-go/day4"
@@ -40,4 +41,10 @@ func main() {
 	fmt.Println("-----------------------------")
 	fmt.Println("Day9 Result -", day9.Day9())
 	fmt.Println("Day9 Part2 Result -", day9.Day9Part2())
+	fmt.Println("-----------------------------")
+	fmt.Println("Day10 Result -", "Not Implemented")
+	fmt.Println("Day10 Part2 Result -", "Not Implemented")
+	fmt.Println("-----------------------------")
+	fmt.Println("Day11 Result -", day11.Day11())
+	fmt.Println("Day11 Part2 Result -", day11.Day11Part2())
 }
