@@ -5,6 +5,7 @@ import (
 	"lcatania/aoc-2024-go/day1"
 	"lcatania/aoc-2024-go/day10"
 	"lcatania/aoc-2024-go/day11"
+	"lcatania/aoc-2024-go/day12"
 	"lcatania/aoc-2024-go/day2"
 	"lcatania/aoc-2024-go/day3"
 	"lcatania/aoc-2024-go/day4"
@@ -48,4 +49,7 @@ func main() {
 	fmt.Println("-----------------------------")
 	fmt.Println("Day11 Result -", day11.Day11())
 	fmt.Println("Day11 Part2 Result -", day11.Day11Part2())
+	fmt.Println("-----------------------------")
+	fmt.Println("Day12 Result -", day12.Day12())
+	fmt.Println("Day12 Part2 Result -", day12.Day12Part2())
 }
