@@ -2,53 +2,160 @@ package day17
 
 import (
 	"fmt"
-	"lcatania/aoc-2024-go/utils"
+	"os"
 	"strconv"
 	"strings"
 )
 
-func Day17() int {
-	fileContent := utils.ReadFile("./day17/sample_input.txt")
-	registers, instructions := parseInput(strings.Split(fileContent, "\n"))
-
-	fmt.Println(registers, instructions)
-	return 0
+type ThreeBitMachine struct {
+	registerA          int
+	registerB          int
+	registerC          int
+	program            []int
+	instructionPointer int
+	outputValues       []int
 }
 
-func Day17Part2() int {
-	fileContent := utils.ReadFile("./day17/sample_input.txt")
-	registers, instructions := parseInput(strings.Split(fileContent, "\n"))
-
-	fmt.Println(registers, instructions)
-	return 0
+func (tm *ThreeBitMachine) adv(operand int) {
+	numerator := tm.registerA
+	denominator := 1 << tm.getComboOperandValue(operand)
+	tm.registerA = numerator / denominator
+	tm.incrementPointer()
 }
 
-func parseInput(contents []string) (map[byte]int64, []int64) {
-	registers := make(map[byte]int64)
-	instructions := make([]int64, 0)
+func (tm *ThreeBitMachine) bdv(operand int) {
+	numerator := tm.registerA
+	denominator := 1 << tm.getComboOperandValue(operand)
+	tm.registerB = numerator / denominator
+	tm.incrementPointer()
+}
 
-	for _, line := range contents {
-		if len(line) == 0 {
-			continue
-		}
+func (tm *ThreeBitMachine) cdv(operand int) {
+	numerator := tm.registerA
+	denominator := 1 << tm.getComboOperandValue(operand)
+	tm.registerC = numerator / denominator
+	tm.incrementPointer()
+}
 
-		if line[:8] == "Register" {
-			register := line[10]
-			val := line[12:]
+func (tm *ThreeBitMachine) bxl(operand int) {
+	tm.registerB ^= operand
+	tm.incrementPointer()
+}
 
-			intVal, _ := strconv.ParseInt(val, 10, 64)
+func (tm *ThreeBitMachine) bst(operand int) {
+	tm.registerB = tm.getComboOperandValue(operand) % 8
+	tm.incrementPointer()
+}
 
-			registers[register] = intVal
-		}
+func (tm *ThreeBitMachine) jnz(operand int) {
+	if tm.registerA == 0 {
+		tm.incrementPointer()
+		return
+	}
+	tm.instructionPointer = operand
+}
 
-		if line[:7] == "Program" {
-			stringInstructions := strings.Split(line, ",")
-			for _, val := range stringInstructions {
-				intVal, _ := strconv.ParseInt(val, 10, 64)
-				instructions = append(instructions, intVal)
-			}
-		}
+func (tm *ThreeBitMachine) bxc(operand int) {
+	tm.registerB ^= tm.registerC
+	tm.incrementPointer()
+}
+
+func (tm *ThreeBitMachine) out(operand int) {
+	operandValue := tm.getComboOperandValue(operand)
+	tm.outputValues = append(tm.outputValues, operandValue%8)
+	tm.incrementPointer()
+}
+
+func (tm *ThreeBitMachine) incrementPointer() {
+	tm.instructionPointer += 2
+}
+
+func (tm *ThreeBitMachine) getComboOperandValue(operand int) int {
+	if operand >= 0 && operand <= 3 {
+		return operand
+	}
+	switch operand {
+	case 4:
+		return tm.registerA
+	case 5:
+		return tm.registerB
+	case 6:
+		return tm.registerC
+	}
+	panic("not a valid program")
+}
+
+func (tm *ThreeBitMachine) runInstruction(opcode int, operand int) {
+	switch opcode {
+	case 0:
+		tm.adv(operand)
+	case 6:
+		tm.bdv(operand)
+	case 7:
+		tm.cdv(operand)
+	case 1:
+		tm.bxl(operand)
+	case 2:
+		tm.bst(operand)
+	case 3:
+		tm.jnz(operand)
+	case 4:
+		tm.bxc(operand)
+	case 5:
+		tm.out(operand)
+	default:
+		panic("not a valid opcode")
+	}
+}
+
+func (tm *ThreeBitMachine) getOutput() string {
+	var output []string
+	for _, value := range tm.outputValues {
+		output = append(output, fmt.Sprintf("%d", value))
+	}
+	return strings.Join(output, ",")
+}
+
+func (tm *ThreeBitMachine) runProgram() string {
+	for tm.instructionPointer < len(tm.program)-1 {
+		opcode := tm.program[tm.instructionPointer]
+		operand := tm.program[tm.instructionPointer+1]
+		tm.runInstruction(opcode, operand)
+	}
+	return tm.getOutput()
+}
+
+func readInputFile(filePath string) []string {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	lines := strings.Split(string(data), "\n")
+	for i := range lines {
+		lines[i] = strings.TrimSpace(lines[i])
+	}
+	return lines
+}
+
+func Day17() string {
+	lines := readInputFile("./day17/input.txt")
+	registerA, _ := strconv.Atoi(lines[0][12:])
+	registerB, _ := strconv.Atoi(lines[1][12:])
+	registerC, _ := strconv.Atoi(lines[2][12:])
+	programStr := lines[4][9:]
+	programStrs := strings.Split(programStr, ",")
+	program := make([]int, len(programStrs))
+	for i, str := range programStrs {
+		program[i], _ = strconv.Atoi(str)
 	}
 
-	return registers, instructions
+	machine := &ThreeBitMachine{
+		registerA:          registerA,
+		registerB:          registerB,
+		registerC:          registerC,
+		program:            program,
+		instructionPointer: 0,
+	}
+
+	return machine.runProgram()
 }

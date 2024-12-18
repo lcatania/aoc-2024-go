@@ -11,6 +11,7 @@ import (
 	"lcatania/aoc-2024-go/day15"
 	"lcatania/aoc-2024-go/day16"
 	"lcatania/aoc-2024-go/day17"
+	"lcatania/aoc-2024-go/day18"
 	"lcatania/aoc-2024-go/day2"
 	"lcatania/aoc-2024-go/day3"
 	"lcatania/aoc-2024-go/day4"
@@ -62,14 +63,17 @@ func main() {
 	fmt.Println("Day13 Part2 Result -", day13.Day13Part2())
 	fmt.Println("-----------------------------")
 	fmt.Println("Day14 Result -", day14.Day14())
-	// fmt.Println("Day14 Part2 Result -", day14.Day14Part2())
+	fmt.Println("Day14 Part2 Result -", day14.Day14Part2())
 	fmt.Println("-----------------------------")
 	fmt.Println("Day15 Result -", day15.Day15())
 	fmt.Println("Day15 Part2 Result -", day15.Day15Part2())
 	fmt.Println("-----------------------------")
 	fmt.Println("Day16 Result -", day16.Day16())
-	fmt.Println("Day16 Part2 Result -", day16.Day16Part2())
+	// fmt.Println("Day16 Part2 Result -", day16.Day16Part2())
 	fmt.Println("-----------------------------")
 	fmt.Println("Day17 Result -", day17.Day17())
 	fmt.Println("Day17 Part2 Result -", day17.Day17Part2())
+	fmt.Println("-----------------------------")
+	fmt.Println("Day18 Result -", day18.Day18())
+	fmt.Println("Day18 Part2 Result -", day18.Day18Part2())
 }
