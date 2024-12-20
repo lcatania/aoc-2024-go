@@ -2,10 +2,11 @@ package day4
 
 import (
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
-func Day4() int {
+func Day4() string {
 	fileContent := utils.ReadFile("./day4/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	result := 0
@@ -56,10 +57,10 @@ func Day4() int {
 			}
 		}
 	}
-	return result
+	return strconv.Itoa(result)
 }
 
-func Day4Part2() int {
+func Day4Part2() string {
 	fileContent := utils.ReadFile("./day4/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	result := 0
@@ -74,5 +75,5 @@ func Day4Part2() int {
 			}
 		}
 	}
-	return result
+	return strconv.Itoa(result)
 }

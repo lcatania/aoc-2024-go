@@ -85,7 +85,7 @@ func abs(x int) int {
 	return x
 }
 
-func Day18() int {
+func Day18() string {
 	fileContent := utils.ReadFile("./day18/input.txt")
 	lines := strings.Split(fileContent, "\n")
 
@@ -103,7 +103,7 @@ func Day18() int {
 
 	s, _ := AStar(Coord{0, 0}, Coord{70, 70}, 70, 70, &grid)
 
-	return s
+	return strconv.Itoa(s)
 }
 
 func Day18Part2() string {

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Day1() int {
+func Day1() string {
 	fileContent := utils.ReadFile("./day1/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	firstList := make([]int, len(lines))
@@ -39,10 +39,10 @@ func Day1() int {
 			distance += secondList[i] - firstList[i]
 		}
 	}
-	return distance
+	return strconv.Itoa(distance)
 }
 
-func Day1Part2() int {
+func Day1Part2() string {
 	fileContent := utils.ReadFile("./day1/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	firstList := make([]int, len(lines))
@@ -67,5 +67,5 @@ func Day1Part2() int {
 	for _, s := range firstList {
 		distance += s * utils.Count(secondList, func(x int) bool { return x == s })
 	}
-	return distance
+	return strconv.Itoa(distance)
 }

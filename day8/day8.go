@@ -2,10 +2,11 @@ package day8
 
 import (
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
-func Day8() int {
+func Day8() string {
 	fileContent := utils.ReadFile("./day8/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := make([][]rune, len(lines))
@@ -16,10 +17,10 @@ func Day8() int {
 		}
 	}
 	antinodes := calcAntinodes(grid)
-	return calcAntinodesCount(antinodes)
+	return strconv.Itoa(calcAntinodesCount(antinodes))
 }
 
-func Day8Part2() int {
+func Day8Part2() string {
 	fileContent := utils.ReadFile("./day8/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := make([][]rune, len(lines))
@@ -30,7 +31,7 @@ func Day8Part2() int {
 		}
 	}
 	antinodes := calcAntinodesP2(grid)
-	return calcAntinodesCount(antinodes)
+	return strconv.Itoa(calcAntinodesCount(antinodes))
 }
 
 func calcAntinodesCount(antinodes [][]rune) int {

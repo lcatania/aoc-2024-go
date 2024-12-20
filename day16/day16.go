@@ -1,247 +1,248 @@
 package day16
 
 import (
+	"fmt"
 	"lcatania/aoc-2024-go/utils"
 	"math"
-	"sort"
+	"slices"
+	"strconv"
 	"strings"
 )
 
-func Day16() int64 {
-	fileContent := utils.ReadFile("./day16/input.txt")
-	lowestPoints := bfs(strings.Split(fileContent, "\n"))
-
-	return lowestPoints
+type node struct {
+	x         int
+	y         int
+	direction rune
+	cost      int
 }
 
-func Day16Part2() int {
-	fileContent := utils.ReadFile("./day16/input.txt")
-	totalSpotsOnAnyPath := dfs(strings.Split(fileContent, "\n"), bfs(strings.Split(fileContent, "\n")))
-	return totalSpotsOnAnyPath
+func newNode(x, y int, direction rune, cost int) *node {
+	return &node{x: x, y: y, direction: direction, cost: cost}
 }
 
-type queueStruct struct {
-	pos                [2]int
-	currPoints         int64
-	currDirectionIndex int
+func (n *node) String() string {
+	return fmt.Sprintf("(%d,%d,%s)", n.x, n.y, string(n.direction))
 }
 
-type cacheKey struct {
-	pos      [2]int
-	dirIndex int
+type priorityQueue struct {
+	data []*node
 }
 
-var directions = [4][2]int{
-	{1, 0},  // Down
-	{0, 1},  // Right
-	{-1, 0}, // Up
-	{0, -1}, // Left
+func newPriorityQueue() *priorityQueue {
+	return &priorityQueue{data: []*node{}}
 }
 
-func bfs(contents []string) int64 {
-	queue := make([]queueStruct, 0)
-	visited := make(map[cacheKey]bool)
-	start, end := findStartAndEnd(contents)
+func (pq *priorityQueue) Append(n *node) {
+	pq.data = append(pq.data, n)
+	pq.Sort()
+}
 
-	queue = append(queue, queueStruct{
-		pos:                start,
-		currPoints:         int64(0),
-		currDirectionIndex: 1, // Starting facing right according to input
+func (pq *priorityQueue) Pop() *node {
+	outNode := pq.data[0]
+	pq.data = pq.data[1:]
+	return outNode
+}
+
+func (pq *priorityQueue) Sort() {
+	slices.SortFunc(pq.data, func(n1, n2 *node) int {
+		if n1.cost == n2.cost {
+			return 0
+		}
+		if n1.cost < n2.cost {
+			return -1
+		}
+		return 1
 	})
+}
 
-	var element queueStruct
-
-	for {
-		if len(queue) == 0 {
-			break
-		}
-
-		// Take the element with the lowest points from the queue (should be the first)
-		element, queue = queue[0], queue[1:]
-
-		if element.pos == end {
-			return element.currPoints
-		}
-
-		// If visited, then we've been here with less points and so can skip
-		if _, ok := visited[cacheKey{element.pos, element.currDirectionIndex}]; ok {
-			continue
-		}
-
-		visited[cacheKey{element.pos, element.currDirectionIndex}] = true
-
-		// We only can go 90 degrees or stay the same, so just do 3 indexes:
-		for i := -1; i <= 1; i++ {
-			newDirIndex := (element.currDirectionIndex + i + 4) % 4
-			dir := directions[newDirIndex]
-
-			newI := element.pos[0] + dir[0]
-			newJ := element.pos[1] + dir[1]
-
-			// Out of bounds checks - we can actually just check for a '#' symbol as we are surrounded by walls
-			if contents[newI][newJ] == '#' {
-				continue
-			}
-
-			// Otherwise, we make the move and add to queue
-			if i == 0 {
-				// Just stepped forward - 1 point added;
-				queue = append(queue, queueStruct{
-					pos:                [2]int{newI, newJ},
-					currPoints:         element.currPoints + 1,
-					currDirectionIndex: element.currDirectionIndex,
-				})
-			} else {
-				// Turned and stepped - 1000 + 1 point added
-				queue = append(queue, queueStruct{
-					pos:                [2]int{newI, newJ},
-					currPoints:         element.currPoints + 1001,
-					currDirectionIndex: newDirIndex,
-				})
-			}
-
-		}
-
-		// Sort the queue by points (might be expensive but enables BFS so probably worth it?):
-		// Sort by lowest cost and then go upwards
-		sort.Slice(queue, func(i, j int) bool {
-			return queue[i].currPoints < queue[j].currPoints
-		})
+func readInput() [][]rune {
+	var data [][]rune
+	fileContent := utils.ReadFile("./day16/input.txt")
+	lines := strings.Split(fileContent, "\n")
+	for _, line := range lines {
+		data = append(data, []rune(line))
 	}
-
-	return math.MaxInt64
+	return data
 }
 
-type queueStructPt2 struct {
-	pos                [2]int
-	currPoints         int64
-	currDirectionIndex int
-	visitedPoints      map[[2]int]bool
-}
-
-func dfs(contents []string, pointsTarget int64) int {
-	queue := make([]queueStructPt2, 0)
-	start, end := findStartAndEnd(contents)
-
-	allShortestPathCoordinates := make(map[[2]int]bool)
-	visitedPoints := map[[2]int]bool{}
-
-	queue = append(queue, queueStructPt2{
-		pos:                start,
-		currPoints:         int64(0),
-		currDirectionIndex: 1, // Starting facing right according to input
-		visitedPoints:      visitedPoints,
-	})
-
-	var element queueStructPt2
-
-	for {
-		if len(queue) == 0 {
-			break
-		}
-
-		// Take the element with the highest points from the queue (should be the first)
-		element = queue[len(queue)-1]
-		queue = queue[:len(queue)-1]
-
-		if element.currPoints > pointsTarget {
-			// If it's exceeded the shortest path's score, we can drop this path
-			continue
-		}
-
-		// has this element been on this spot before?
-		if _, ok := element.visitedPoints[element.pos]; ok {
-			continue
-		}
-
-		element.visitedPoints[element.pos] = true
-
-		if element.pos == end {
-			addToShortestPathCoordinates(&allShortestPathCoordinates, element.visitedPoints)
-			continue
-		}
-
-		// We only can go 90 degrees or stay the same, so just do 3 indexes:
-		for i := -1; i <= 1; i++ {
-			newDirIndex := (element.currDirectionIndex + i + 4) % 4
-			dir := directions[newDirIndex]
-
-			newI := element.pos[0] + dir[0]
-			newJ := element.pos[1] + dir[1]
-
-			// Out of bounds checks - we can actually just check for a '#' symbol as we are surrounded by walls
-			if contents[newI][newJ] == '#' {
-				continue
+func findStart(data [][]rune) (int, int) {
+	for i := range data {
+		for j := range data[i] {
+			if data[i][j] == rune('S') {
+				return i, j
 			}
-
-			if _, ok := element.visitedPoints[[2]int{newI, newJ}]; ok {
-				continue
-			}
-
-			// Otherwise, we make the move and add to queue
-			if i == 0 && element.currPoints+1 <= pointsTarget {
-				// Just stepped forward - 1 point added;
-				queue = append(queue, queueStructPt2{
-					pos:                [2]int{newI, newJ},
-					currPoints:         element.currPoints + 1,
-					currDirectionIndex: element.currDirectionIndex,
-					visitedPoints:      copyMap(element.visitedPoints),
-				})
-			} else if element.currPoints+1000 <= pointsTarget {
-				// Turned and stepped - 1000 + 1 point added
-				queue = append(queue, queueStructPt2{
-					pos:                [2]int{newI, newJ},
-					currPoints:         element.currPoints + 1001,
-					currDirectionIndex: newDirIndex,
-					visitedPoints:      copyMap(element.visitedPoints),
-				})
-			}
-
 		}
-
-		// Sort the queue by points (might be expensive but enables BFS so probably worth it?):
-		// Sort by lowest cost and then go upwards
-		sort.Slice(queue, func(i, j int) bool {
-			return queue[i].currPoints < queue[j].currPoints
-		})
 	}
-
-	return len(allShortestPathCoordinates)
+	return -1, -1
 }
 
-func addToShortestPathCoordinates(visited *map[[2]int]bool, newVisitedCoordinates map[[2]int]bool) {
-	for coord := range newVisitedCoordinates {
-		(*visited)[coord] = true
+func findEnd(data [][]rune) (int, int) {
+	for i := range data {
+		for j := range data[i] {
+			if data[i][j] == rune('E') {
+				return i, j
+			}
+		}
+	}
+	return -1, -1
+}
+
+func findShortest(data [][]rune, startX, startY, endX, endY int, startDir rune) (int, map[rune][][]int) {
+	pq := newPriorityQueue()
+	pq.Append(newNode(startX, startY, startDir, 0))
+	costMatrix := make(map[rune][][]int)
+	costMatrix[rune('^')] = make([][]int, len(data))
+	costMatrix[rune('v')] = make([][]int, len(data))
+	costMatrix[rune('>')] = make([][]int, len(data))
+	costMatrix[rune('<')] = make([][]int, len(data))
+	for i := range data {
+		costMatrix[rune('^')][i] = make([]int, len(data[i]))
+		costMatrix[rune('v')][i] = make([]int, len(data[i]))
+		costMatrix[rune('>')][i] = make([]int, len(data[i]))
+		costMatrix[rune('<')][i] = make([]int, len(data[i]))
+		for j := range data[i] {
+			costMatrix[rune('^')][i][j] = math.MaxInt32
+			costMatrix[rune('v')][i][j] = math.MaxInt32
+			costMatrix[rune('>')][i][j] = math.MaxInt32
+			costMatrix[rune('<')][i][j] = math.MaxInt32
+		}
+	}
+	costMatrix[rune('>')][startX][startY] = 0
+	for len(pq.data) > 0 {
+		currNode := pq.Pop()
+		if currNode.x == endX && currNode.y == endY {
+			return currNode.cost, costMatrix
+		}
+		// Check straight
+		dx, dy := translateDirection(currNode.direction)
+		newX := currNode.x + dx
+		newY := currNode.y + dy
+		if data[newX][newY] != rune('#') {
+			newCost := currNode.cost + 1
+			if newCost < costMatrix[currNode.direction][newX][newY] {
+				costMatrix[currNode.direction][newX][newY] = newCost
+				pq.Append(newNode(newX, newY, currNode.direction, newCost))
+			}
+		}
+		// Check right
+		newDirection := turnRight(currNode.direction)
+		dx, dy = translateDirection(newDirection)
+		newX = currNode.x + dx
+		newY = currNode.y + dy
+		if data[newX][newY] != rune('#') {
+			newCost := currNode.cost + 1001
+			if newCost < costMatrix[newDirection][newX][newY] {
+				costMatrix[newDirection][currNode.x][currNode.y] = newCost - 1
+				costMatrix[newDirection][newX][newY] = newCost
+				pq.Append(newNode(newX, newY, newDirection, newCost))
+			}
+		}
+		// Check left
+		newDirection = turnLeft(currNode.direction)
+		dx, dy = translateDirection(newDirection)
+		newX = currNode.x + dx
+		newY = currNode.y + dy
+		if data[newX][newY] != rune('#') {
+			newCost := currNode.cost + 1001
+			if newCost < costMatrix[newDirection][newX][newY] {
+				costMatrix[newDirection][currNode.x][currNode.y] = newCost - 1
+				costMatrix[newDirection][newX][newY] = newCost
+				pq.Append(newNode(newX, newY, newDirection, newCost))
+			}
+		}
+	}
+	return -1, costMatrix
+}
+
+func Day16() string {
+	data := readInput()
+	result := 0
+	endX, endY := findEnd(data)
+	startX, startY := findStart(data)
+	result, _ = findShortest(data, startX, startY, endX, endY, rune('>'))
+	return strconv.Itoa(result)
+}
+
+func Day16Part2() string {
+	data := readInput()
+	result := 0
+	endX, endY := findEnd(data)
+	startX, startY := findStart(data)
+	shortestPath, costMatrix1 := findShortest(data, startX, startY, endX, endY, rune('>'))
+	_, costMatrix2 := findShortest(data, endX, endY, startX, startY, rune('^'))
+	_, costMatrix3 := findShortest(data, endX, endY, startX, startY, rune('>'))
+	_, costMatrix4 := findShortest(data, endX, endY, startX, startY, rune('v'))
+	_, costMatrix5 := findShortest(data, endX, endY, startX, startY, rune('<'))
+	for d := range costMatrix1 {
+		flippedDir := turnRight(turnRight(d))
+		for i := range costMatrix1[d] {
+			for j := range costMatrix1[d][i] {
+				for _, v := range []int{costMatrix2[flippedDir][i][j],
+					costMatrix3[flippedDir][i][j],
+					costMatrix4[flippedDir][i][j],
+					costMatrix5[flippedDir][i][j]} {
+					flipSum := costMatrix1[d][i][j] + v
+					if flipSum == shortestPath {
+						data[i][j] = rune('O')
+					}
+				}
+			}
+		}
+	}
+	for i := range data {
+		for j := range data[i] {
+			if data[i][j] == rune('O') || data[i][j] == rune('S') || data[i][j] == rune('E') {
+				result++
+			}
+		}
+	}
+	return strconv.Itoa(result)
+}
+
+func turnRight(direction rune) rune {
+	switch direction {
+	case rune('^'):
+		return rune('>')
+	case rune('>'):
+		return rune('v')
+	case rune('v'):
+		return rune('<')
+	case rune('<'):
+		return rune('^')
+	default:
+		fmt.Println("Wrong direction provided")
+		return direction
 	}
 }
 
-func findStartAndEnd(contents []string) ([2]int, [2]int) {
-	var start, end [2]int
-	foundCount := 0
-	for i, line := range contents {
-		for j, char := range line {
-			if char == 'S' {
-				start = [2]int{i, j}
-				foundCount++
-			}
-			if char == 'E' {
-				end = [2]int{i, j}
-				foundCount++
-			}
-		}
-		if foundCount == 2 {
-			break
-		}
+func translateDirection(direction rune) (int, int) {
+	switch direction {
+	case rune('^'):
+		return -1, 0
+	case rune('<'):
+		return 0, -1
+	case rune('v'):
+		return 1, 0
+	case rune('>'):
+		return 0, 1
+	default:
+		fmt.Println("Wrong direction provided")
+		return 0, 0
 	}
-
-	return start, end
 }
 
-func copyMap(m map[[2]int]bool) map[[2]int]bool {
-	m2 := make(map[[2]int]bool, len(m))
-	var id [2]int
-	for id = range m {
-		m2[id] = true
+func turnLeft(direction rune) rune {
+	switch direction {
+	case rune('^'):
+		return rune('<')
+	case rune('<'):
+		return rune('v')
+	case rune('v'):
+		return rune('>')
+	case rune('>'):
+		return rune('^')
+	default:
+		fmt.Println("Wrong direction provided")
+		return direction
 	}
-	return m2
 }

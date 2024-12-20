@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Day13() int64 {
+func Day13() string {
 	fileContent := utils.ReadFile("./day13/input.txt")
 	equations := parseInput(strings.Split(fileContent, "\n"))
 
@@ -33,10 +33,10 @@ func Day13() int64 {
 		}
 	}
 
-	return totalTickets
+	return strconv.FormatInt(totalTickets, 10)
 }
 
-func Day13Part2() int64 {
+func Day13Part2() string {
 	fileContent := utils.ReadFile("./day13/input.txt")
 	equations := parseInput(strings.Split(fileContent, "\n"))
 
@@ -62,7 +62,7 @@ func Day13Part2() int64 {
 		}
 	}
 
-	return totalTickets
+	return strconv.FormatInt(totalTickets, 10)
 }
 
 type equationsStruct struct {

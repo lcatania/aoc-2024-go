@@ -2,6 +2,7 @@ package day12
 
 import (
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
@@ -10,7 +11,7 @@ type Point struct {
 	y int
 }
 
-func Day12() int {
+func Day12() string {
 	fileContent := utils.ReadFile("./day12/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := map[Point]rune{}
@@ -75,10 +76,10 @@ func Day12() int {
 			}
 		}
 	}
-	return result
+	return strconv.Itoa(result)
 }
 
-func Day12Part2() int {
+func Day12Part2() string {
 	fileContent := utils.ReadFile("./day12/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := map[Point]rune{}
@@ -168,7 +169,7 @@ func Day12Part2() int {
 			result += sides * area
 		}
 	}
-	return result
+	return strconv.Itoa(result)
 }
 
 func walk(walkIn Point, walkOut Point, dir Point, sidesToWalk *map[Point]map[Point]bool) {

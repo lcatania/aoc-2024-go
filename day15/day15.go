@@ -3,6 +3,7 @@ package day15
 import (
 	"bytes"
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
@@ -13,7 +14,7 @@ var DIRECTION_MAPPINGS = map[byte][2]int{
 	'<': {0, -1},
 }
 
-func Day15() int {
+func Day15() string {
 	fileContent := utils.ReadFile("./day15/input.txt")
 	grid, instructions := parseInput(strings.Split(fileContent, "\n"), false)
 
@@ -53,10 +54,10 @@ func Day15() int {
 		}
 	}
 
-	return gpsSum
+	return strconv.Itoa(gpsSum)
 }
 
-func Day15Part2() int {
+func Day15Part2() string {
 	fileContent := utils.ReadFile("./day15/input.txt")
 	grid, instructions := parseInput(strings.Split(fileContent, "\n"), true)
 
@@ -96,7 +97,7 @@ func Day15Part2() int {
 		}
 	}
 
-	return gpsSum
+	return strconv.Itoa(gpsSum)
 }
 
 func moveRobotByInstruction(currentPosition [2]int, direction byte, grid *[][]byte) [2]int {

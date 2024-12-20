@@ -24,7 +24,7 @@ func (p Point) GetAdjacent() []Point {
 	return adjacent
 }
 
-func Day10() int {
+func Day10() string {
 	fileContent := utils.ReadFile("./day10/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := make(map[Point]int)
@@ -45,10 +45,10 @@ func Day10() int {
 		}
 	}
 
-	return result
+	return strconv.Itoa(result)
 }
 
-func Day10Part2() int {
+func Day10Part2() string {
 	fileContent := utils.ReadFile("./day10/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	grid := make(map[Point]int)
@@ -69,7 +69,7 @@ func Day10Part2() int {
 			result += numberOfPaths
 		}
 	}
-	return result
+	return strconv.Itoa(result)
 }
 
 func getValidNeighbours(grid map[Point]int, point Point) []Point {

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Day5() int {
+func Day5() string {
 	fileContent := utils.ReadFile("./day5/input.txt")
 	splittedInput := strings.Split(fileContent, "\n\n")
 
@@ -21,10 +21,10 @@ func Day5() int {
 		}
 	}
 
-	return sum
+	return strconv.Itoa(sum)
 }
 
-func Day5Part2() int {
+func Day5Part2() string {
 	fileContent := utils.ReadFile("./day5/input.txt")
 	splittedInput := strings.Split(fileContent, "\n\n")
 
@@ -41,7 +41,7 @@ func Day5Part2() int {
 		}
 	}
 
-	return sum
+	return strconv.Itoa(sum)
 }
 
 func compareFn(rules map[int][]int) func(a, b int) int {

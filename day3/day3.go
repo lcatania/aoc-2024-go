@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-func Day3() int {
+func Day3() string {
 	fileContent := utils.ReadFile("./day3/input.txt")
 
-	return getSum(fileContent)
+	return strconv.Itoa(getSum(fileContent))
 }
 
-func Day3Part2() int {
+func Day3Part2() string {
 	fileContent := utils.ReadFile("./day3/input.txt")
 
 	dontSplit := strings.Split(fileContent, "don't()")
@@ -29,7 +29,7 @@ func Day3Part2() int {
 	}
 
 	sum := getSum(strings.Join(doSplits, ""))
-	return sum
+	return strconv.Itoa(sum)
 }
 
 func getSum(valStr string) int {

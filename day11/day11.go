@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Day11() int {
+func Day11() string {
 	input := utils.ReadFile("./day11/input.txt")
 	list := strings.Split(input, " ")
 	for i := 0; i < 25; i++ {
@@ -34,10 +34,10 @@ func Day11() int {
 			}
 		}
 	}
-	return len(list)
+	return strconv.Itoa(len(list))
 }
 
-func Day11Part2() int {
+func Day11Part2() string {
 	input := utils.ReadFile("./day11/input.txt")
 	list := utils.ConvertStringArrayToInt(strings.Split(input, " "))
 	result := 0
@@ -49,7 +49,7 @@ func Day11Part2() int {
 	for _, stone := range list {
 		result += countStones(stone, cache, 75)
 	}
-	return result
+	return strconv.Itoa(result)
 }
 
 func countStones(stone int, cache map[int]map[int]int, reps int) int {

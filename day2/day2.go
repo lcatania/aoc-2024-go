@@ -3,10 +3,11 @@ package day2
 import (
 	"lcatania/aoc-2024-go/utils"
 	"math"
+	"strconv"
 	"strings"
 )
 
-func Day2() int {
+func Day2() string {
 	fileContent := utils.ReadFile("./day2/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	numSafe := 0
@@ -17,10 +18,10 @@ func Day2() int {
 			numSafe += 1
 		}
 	}
-	return numSafe
+	return strconv.Itoa(numSafe)
 }
 
-func Day2Part2() int {
+func Day2Part2() string {
 	fileContent := utils.ReadFile("./day2/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	numSafe := 0
@@ -44,7 +45,7 @@ func Day2Part2() int {
 			numSafe += 1
 		}
 	}
-	return numSafe
+	return strconv.Itoa(numSafe)
 }
 
 func isReportSafe(values []int) bool {

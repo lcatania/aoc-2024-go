@@ -2,9 +2,10 @@ package day9
 
 import (
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 )
 
-func Day9() int {
+func Day9() string {
 	var nums []int
 
 	line := utils.ReadFile("./day9/input.txt")
@@ -56,10 +57,10 @@ func Day9() int {
 		}
 	}
 
-	return total
+	return strconv.Itoa(total)
 }
 
-func Day9Part2() int {
+func Day9Part2() string {
 	var nums []int
 
 	line := utils.ReadFile("./day9/input.txt")
@@ -104,5 +105,5 @@ func Day9Part2() int {
 		right -= 2
 	}
 
-	return total
+	return strconv.Itoa(total)
 }

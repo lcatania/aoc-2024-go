@@ -106,11 +106,11 @@ func getOutput(a int, registersOriginal map[string]int, programs []int) []int {
 	return outputs
 }
 
-func Day17Part2() int {
+func Day17Part2() string {
 	file, err := os.Open("./day17/input.txt")
 	if err != nil {
 		fmt.Println(err)
-		return 0
+		return "0"
 	}
 	defer file.Close()
 
@@ -171,5 +171,5 @@ func Day17Part2() int {
 			answer = v
 		}
 	}
-	return answer
+	return strconv.Itoa(answer)
 }

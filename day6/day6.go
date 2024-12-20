@@ -2,12 +2,13 @@ package day6
 
 import (
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
 type vec [2]int
 
-func Day6() int {
+func Day6() string {
 	fileContent := utils.ReadFile("./day6/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	w := len(lines[0])
@@ -35,10 +36,10 @@ func Day6() int {
 		}
 		guard = next
 	}
-	return len(visited)
+	return strconv.Itoa(len(visited))
 }
 
-func Day6Part2() int {
+func Day6Part2() string {
 	fileContent := utils.ReadFile("./day6/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	w := len(lines[0])
@@ -79,7 +80,7 @@ func Day6Part2() int {
 		grid[v[1]][v[0]] = '.'
 	}
 
-	return result
+	return strconv.Itoa(result)
 }
 
 func findGuard(grid [][]rune) vec {

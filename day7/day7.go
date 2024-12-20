@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Day7() int {
+func Day7() string {
 	fileContent := utils.ReadFile("./day7/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	sum := 0
@@ -27,10 +27,10 @@ func Day7() int {
 		}
 
 	}
-	return sum
+	return strconv.Itoa(sum)
 }
 
-func Day7Part2() int {
+func Day7Part2() string {
 	fileContent := utils.ReadFile("./day7/input.txt")
 	lines := strings.Split(fileContent, "\n")
 	sum := 0
@@ -49,7 +49,7 @@ func Day7Part2() int {
 		}
 
 	}
-	return sum
+	return strconv.Itoa(sum)
 }
 
 func calc(testValue, result int, numbers []int, part int) bool {

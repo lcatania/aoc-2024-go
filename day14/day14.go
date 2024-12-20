@@ -3,6 +3,7 @@ package day14
 import (
 	"fmt"
 	"lcatania/aoc-2024-go/utils"
+	"strconv"
 	"strings"
 )
 
@@ -18,7 +19,7 @@ const (
 	maxY = 103
 )
 
-func Day14() int {
+func Day14() string {
 	var bots []Bot
 
 	fileContent := utils.ReadFile("./day14/input.txt")
@@ -72,10 +73,10 @@ func Day14() int {
 	}
 
 	out := q1 * q2 * q3 * q4
-	return out
+	return strconv.Itoa(out)
 }
 
-func Day14Part2() int {
+func Day14Part2() string {
 	var bots []Bot
 
 	fileContent := utils.ReadFile("./day14/input.txt")
@@ -130,8 +131,8 @@ func Day14Part2() int {
 		}
 
 		if distinct {
-			return i + 1
+			return strconv.Itoa(i + 1)
 		}
 	}
-	return 0
+	return "0"
 }
