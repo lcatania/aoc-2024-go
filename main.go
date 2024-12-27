@@ -20,6 +20,7 @@ import (
 	"lcatania/aoc-2024-go/day22"
 	"lcatania/aoc-2024-go/day23"
 	"lcatania/aoc-2024-go/day24"
+	"lcatania/aoc-2024-go/day25"
 	"lcatania/aoc-2024-go/day3"
 	"lcatania/aoc-2024-go/day4"
 	"lcatania/aoc-2024-go/day5"
@@ -79,6 +80,8 @@ var dayFuncMapping = map[string](func() string){
 	"23.5": day23.Day23Part2,
 	"24":   day24.Day24,
 	"24.5": day24.Day24Part2,
+	"25":   day25.Day25,
+	"25.5": day25.Day25Part2,
 }
 
 func main() {
